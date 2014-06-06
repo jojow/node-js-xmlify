@@ -13,10 +13,18 @@ var prerender = function(data, config) {
   var c = config || {};
 
   c.replaceSpecialChars = c.replaceSpecialChars || true;
+  c.wrapArrays = c.wrapArrays || true;
 
   _.each(data, function(value, key, list) {
     // value modifications
-    if (!_.isString(value)) prerender(value);
+    if (!_.isString(value)) {
+      // wrap arrays
+      if (c.wrapArrays && _.isArray(value)) {
+        list[key] = { list: { item: value } };
+      }
+
+      prerender(value);
+    }
 
     // key modifications
     if (!_.isNumber(key)) {
@@ -50,6 +58,7 @@ var postparse = function(data, config) {
 
     // key modifications
     if (!_.isNumber(key)) {
+      // remove namespace metadata
       if (c.removeNamespaceMeta &&
            (_.str.startsWith(key, 'xmlns') ||
             _.str.endsWith(key, 'targetNamespace'))) {
@@ -57,11 +66,13 @@ var postparse = function(data, config) {
         return;
       }
 
+      // remove schema location attributes
       if (c.removeSchemaLocation && _.str.endsWith(key, 'schemaLocation')) {
         delete list[key];
         return;
       }
 
+      // convert qnames to local names
       if (c.preferLocalName) {
         var newKey = localname(key);
 
