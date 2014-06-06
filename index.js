@@ -19,7 +19,7 @@ var prerender = function(data, config) {
     // value modifications
     if (!_.isString(value)) {
       // wrap arrays
-      if (c.wrapArrays && _.isArray(value)) {
+      if (c.wrapArrays && _.isArray(value) && !_.isEmpty(value)) {
         list[key] = { list: { item: value } };
       }
 
