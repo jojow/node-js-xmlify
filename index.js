@@ -9,7 +9,7 @@ var localname = function(qName) {
 
 
 
-var prerender = function(data, config) {
+var prerender = function(data, config, transformKey, transformValue) {
   var c = config || {};
 
   c.replaceSpecialChars = c.replaceSpecialChars || true;
@@ -17,6 +17,10 @@ var prerender = function(data, config) {
 
   _.each(data, function(value, key, list) {
     // value modifications
+    if (transformValue) {
+      list[key] = transformValue(value);
+    }
+
     if (!_.isString(value)) {
       // wrap arrays
       if (c.wrapArrays && _.isArray(value) && !_.isEmpty(value)) {
@@ -27,6 +31,15 @@ var prerender = function(data, config) {
     }
 
     // key modifications
+    if (transformKey) {
+      var newKey = transformKey(key);
+
+      if (key !== newKey) {
+        list[newKey] = list[key];
+        delete list[key];
+      }
+    }
+
     if (!_.isNumber(key)) {
       // replace special characters
       if (c.replaceSpecialChars) {
@@ -45,7 +58,7 @@ var prerender = function(data, config) {
 
 
 
-var postparse = function(data, config) {
+var postparse = function(data, config, transformKey, transformValue) {
   var c = config || {};
 
   c.removeNamespaceMeta = c.removeNamespaceMeta || true;
@@ -54,9 +67,22 @@ var postparse = function(data, config) {
 
   _.each(data, function(value, key, list) {
     // value modifications
+    if (transformValue) {
+      list[key] = transformValue(value);
+    }
+
     if (!_.isString(value)) postparse(value);
 
     // key modifications
+    if (transformKey) {
+      var newKey = transformKey(key);
+
+      if (key !== newKey) {
+        list[newKey] = list[key];
+        delete list[key];
+      }
+    }
+
     if (!_.isNumber(key)) {
       // remove namespace metadata
       if (c.removeNamespaceMeta &&
