@@ -9,7 +9,7 @@ var localname = function(qName) {
 
 
 
-var prerender = function(data, config, transformKey, transformValue) {
+var prerender = function(data, config) {
   var c = config || {};
 
   c.replaceSpecialChars = c.replaceSpecialChars || true;
@@ -17,8 +17,8 @@ var prerender = function(data, config, transformKey, transformValue) {
 
   _.each(data, function(value, key, list) {
     // value modifications
-    if (transformValue) {
-      list[key] = transformValue(value);
+    if (c.transformValue) {
+      list[key] = c.transformValue(value);
     }
 
     if (!_.isString(value)) {
@@ -27,12 +27,12 @@ var prerender = function(data, config, transformKey, transformValue) {
         list[key] = { list: { item: value } };
       }
 
-      prerender(value);
+      prerender(value, config);
     }
 
     // key modifications
-    if (transformKey) {
-      var newKey = transformKey(key);
+    if (c.transformKey) {
+      var newKey = c.transformKey(key);
 
       if (key !== newKey) {
         list[newKey] = list[key];
@@ -58,7 +58,7 @@ var prerender = function(data, config, transformKey, transformValue) {
 
 
 
-var postparse = function(data, config, transformKey, transformValue) {
+var postparse = function(data, config) {
   var c = config || {};
 
   c.removeNamespaceMeta = c.removeNamespaceMeta || true;
@@ -67,15 +67,15 @@ var postparse = function(data, config, transformKey, transformValue) {
 
   _.each(data, function(value, key, list) {
     // value modifications
-    if (transformValue) {
-      list[key] = transformValue(value);
+    if (c.transformValue) {
+      list[key] = c.transformValue(value);
     }
 
-    if (!_.isString(value)) postparse(value);
+    if (!_.isString(value)) postparse(value, config);
 
     // key modifications
-    if (transformKey) {
-      var newKey = transformKey(key);
+    if (c.transformKey) {
+      var newKey = c.transformKey(key);
 
       if (key !== newKey) {
         list[newKey] = list[key];
