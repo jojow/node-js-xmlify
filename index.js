@@ -18,7 +18,7 @@ var prerender = function(data, config) {
   _.each(data, function(value, key, list) {
     // value modifications
     if (c.transformValue) {
-      list[key] = c.transformValue(value);
+      list[key] = c.transformValue(key, value);
     }
 
     if (!_.isString(value)) {
@@ -32,7 +32,7 @@ var prerender = function(data, config) {
 
     // key modifications
     if (c.transformKey) {
-      var newKey = c.transformKey(key);
+      var newKey = c.transformKey(key, value);
 
       if (key !== newKey) {
         list[newKey] = list[key];
