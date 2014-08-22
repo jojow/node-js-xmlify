@@ -1,5 +1,7 @@
 # js-xmlify
 
+[![Build Status](https://travis-ci.org/jojow/node-js-xmlify.svg?branch=master)](https://travis-ci.org/jojow/node-js-xmlify)
+
 Use npm to install the package:
 
     npm install js-xmlify
