@@ -1,7 +1,7 @@
 {
   "name": "js-xmlify",
   "preferGlobal": false,
-  "version": "0.0.8",
+  "version": "0.0.9",
   "author": "Johannes Wettinger <mail@jojow.de>",
   "description": "Helper functions to deal with XML data structures and metadata in node.js",
   "repository": {

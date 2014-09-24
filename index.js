@@ -46,6 +46,7 @@ var prerender = function(data, config) {
         var newKey = key.replace(/[^a-zA-Z0-9]/g, '_');
 
         if (_.str.startsWith(newKey, '_')) newKey = 'e' + newKey;
+        else if (!isNaN(parseInt(newKey.substr(0, 1)))) newKey = 'e_' + newKey;
 
         if (key !== newKey) {
           list[newKey] = list[key];
